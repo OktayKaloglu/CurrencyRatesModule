@@ -1,2 +1,2 @@
-# ExcangeRatesModule
-an exchange rate module for e-commerce companies. 
+# CurrencyRatesModule
+An currency rate module for e-commerce companies. 
