@@ -16,5 +16,3 @@ class DataBase{
 
 }
 
-$db=new DataBase;
-var_dump($db);
