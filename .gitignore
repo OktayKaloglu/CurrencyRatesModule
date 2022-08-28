@@ -1,3 +1,4 @@
 *.dist
 *.idea
 xml/
+configDB.json

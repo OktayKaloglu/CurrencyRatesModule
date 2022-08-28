@@ -1,6 +1,6 @@
 {
-  "servername": "servername",
-  "username": "username",
-  "password": "password",
-  "dbName":"dbName"
+  "servername": "localhost",
+  "username": "admin",
+  "password": "192837465",
+  "dbName":"exchange_list"
 }
