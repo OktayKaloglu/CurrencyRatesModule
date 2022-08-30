@@ -4,6 +4,17 @@ class DataBase{
 
     static $db;
     private $path="configDB.json";
+    function __destruct() {
+        try{
+            $this->getInstance()->query('KILL CONNECTION_ID()');#force the database to close conn
+            $this::$db=null;
+            echo "Database connection is closed.";
+        }catch (PDOException $e){
+
+            echo $e->getMessage()."\n";
+        }
+    }
+
     public function getInstance(){
         if ($this::$db==null){
 
@@ -37,6 +48,7 @@ class DataBase{
         try{
             $sql="select $sel
                 from $target
+                
             ";
             $querry=$this->getInstance()->query($sql)->fetchAll();
             print_r( $querry)."\n";
@@ -47,6 +59,7 @@ class DataBase{
 
 }
 
+/*
 $target="parity(code,name)";
 $vals="('asd','as')";
 $asd= new DataBase();
@@ -55,3 +68,4 @@ $asd->insertion($vals,$target);
 $sel="*";
 $tar="parity";
 $asd->query($sel,$tar);
+*/
