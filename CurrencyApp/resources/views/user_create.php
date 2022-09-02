@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Student Management | Add</title>
+    <title>User Management | Add</title>
 </head>
 
 <body>
