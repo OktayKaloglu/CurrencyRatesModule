@@ -15,12 +15,13 @@ return new class extends Migration
     {
         Schema::create('rates', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('time');
             $table->foreignId('vendor_id')->constrained('vendors')->cascadeOnUpdate();
             $table->foreignId('parity_id')->constrained('parities')->cascadeOnUpdate();
             $table->float('buy_rate');
             $table->float('sell_rate');
-
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });
     }
 
