@@ -3,3 +3,5 @@
 xml/
 configDB.json
 README.md
+example-app/
+.env
