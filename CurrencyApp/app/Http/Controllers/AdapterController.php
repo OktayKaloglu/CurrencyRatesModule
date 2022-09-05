@@ -7,7 +7,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 use App\Http\Controllers\DatabaseFiller;
-
+use Throwable;
 
 class AdapterController extends Controller {
     /*
@@ -30,24 +30,41 @@ class AdapterController extends Controller {
 
      */
     public function adapterTCMB(){
-        $url='https://www.tcmb.gov.tr/kurlar/202208/31082022.xml';
-        $xml=simplexml_load_file($url) ;
-        $vendorCode="TCMB";
-        $baseCode="TRY";
-        $baseName="TURKISH LIRA";
-        $parities=array();
-        $time=$xml->attributes()["Date"];
-        foreach ($xml->Currency as $curr){
-            array_push($parities, [
-                "code"=>$curr->attributes()["CurrencyCode"].'/'.$baseCode,
-                "name"=>$curr->CurrencyName.' '.$baseName,
-                "buy_rate"=>(float)$curr->ForexBuying,
-                "sell_rate"=>(float)$curr->ForexSelling,
-            ]);
+        #$url='https://www.tcmb.gov.tr/kurlar/202209/05092022.xml'; for test purpose.
+        $url=$this->TCMBURL();
+        $xml=null;
+        try{
+            $xml=simplexml_load_file($url);
         }
-        $DBFiller=new DatabaseFiller();
-        $DBFiller-> parityfill($baseCode,$baseName,$parities);
-        $DBFiller->ratesfill($time,$vendorCode,$parities);
+        catch (Throwable $e){
+            echo $e->getMessage(). '<br/>';
+        }
+        if($xml!=null){
+            $vendorCode="TCMB";
+            $baseCode="TRY";
+            $baseName="TURKISH LIRA";
+            $parities=array();
+            $time=$xml->attributes()["Date"];
+            foreach ($xml->Currency as $curr){
+                array_push($parities, [
+                    "code"=>$curr->attributes()["CurrencyCode"].'/'.$baseCode,
+                    "name"=>$curr->CurrencyName.' '.$baseName,
+                    "buy_rate"=>(float)$curr->ForexBuying,
+                    "sell_rate"=>(float)$curr->ForexSelling,
+                ]);
+            }
+            $DBFiller=new DatabaseFiller();
+            $DBFiller-> parityfill($baseCode,$baseName,$parities);
+            $DBFiller->ratesfill($time,$vendorCode,$parities);
+        }
+
+    }
+    public function TCMBURL(){
+        $year=date('Y');
+        $month=date('m');
+        $day=date('d');
+        $url='https://www.tcmb.gov.tr/kurlar/'.$year.$month.'/'.$day.$month.$year.'.xml';
+        return $url;
     }
 
     #

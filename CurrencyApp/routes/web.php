@@ -26,11 +26,14 @@ Route::post('/create',UserInsertController::class.'@insert');
 
 Route::get('/main',DatabaseFiller::class.'@mainpage');
 
+Route::get('/test',AdapterController::class.'@adapterTCMB');
+
+
 Route::get('/user',UserProfile::class.'@showuser');
 Route::post('/user/token',UserProfile::class.'@apiToken');
 Route::post('/newToken',UserProfile::class.'@updateToken');
 
-Route::post('/parityfill',AdapterController::class.'@adapterTCMB');
+Route::post('/parityfill',DatabaseFiller::class.'@fillparity');
 Route::post('/showparity',DatabaseFiller::class.'@showparity');
 
 Route::post('/ratesfill',DatabaseFiller::class.'@ratesfill');

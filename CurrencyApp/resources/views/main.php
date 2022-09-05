@@ -14,6 +14,16 @@
         </tr>
     </table>
 </form>
+<form action = "/test" method = "get">
+    <input type = "hidden" name = "_token" value = "<?php echo csrf_token(); ?>">
+    <table>
+
+        <td colspan = '2'>
+            <input type = 'submit' value = "Test"/>
+        </td>
+        </tr>
+    </table>
+</form>
 <form action = "/parityfill" method = "post">
     <input type = "hidden" name = "_token" value = "<?php echo csrf_token(); ?>">
     <table>

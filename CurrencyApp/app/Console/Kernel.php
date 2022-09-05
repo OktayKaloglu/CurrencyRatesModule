@@ -15,8 +15,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('adapter:daily TCMB')->dailyAt('15:31');#TCMB announce the new  rates every day ay 15:30 TRT
+        $schedule->command('adapter:daily ECB')->dailyAt('15:16');#ECB announce the new  rates every day ay 14:15 CET(15:15 TRT)
+
+        $schedule->command('adapter:daily TCMB')->everyMinute()->appendOutputTo('adapter.log');
+
     }
+
 
     /**
      * Register the commands for the application.
@@ -29,4 +34,7 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
+
+
 }
