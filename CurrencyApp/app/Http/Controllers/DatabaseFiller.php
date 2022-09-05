@@ -29,22 +29,14 @@ class DatabaseFiller extends Controller {
     }
 
 
-    /*
-        INSERT INTO currency_rates.vendors(name,code)
-        values('Türkiye Cumhuriyeti Merkez Bankası','TCMB')
-        ;
-    */
-
-    public function parityfill(Request $request) {
+    public function parityfill($baseCode,$baseName,$currencies) {
         #adding new parities to the db
 
-        $url='https://www.tcmb.gov.tr/kurlar/202208/31082022.xml';
-        $xml=simplexml_load_file($url) ;
-        #print_r($xml);
-        foreach ($xml->Currency as $curr){
+        foreach ($currencies as $curr){
 
-          $code=$curr->attributes()["CurrencyCode"]."/TRY";
-          $name=($curr->CurrencyName).' / TURKISH LIRA';
+          $code=$curr["code"]."/$baseCode";
+          $name=$curr["name"]."/$baseName";
+          echo $code.' '.$name.'</br>';
 
           try{
               DB::insert('insert into parities (code,name) values(?,?)',[$code,$name]);
@@ -70,31 +62,24 @@ class DatabaseFiller extends Controller {
         echo '<a href = "/main">Click Here</a> to go back.';
     }
 
-    public function ratesfill(Request $request) {
-        #adding new parities to the db
+    public function ratesfill($time,$vendor,$rates) {
 
-        $url='https://www.tcmb.gov.tr/kurlar/202208/31082022.xml';
-        $xml=simplexml_load_file($url) ;
-        $time=$xml->attributes()["Date"];
+        $vendor_id=$this->idFounder($vendor,"vendors");
 
 
-        $vendor_id=$this->idFounder('TCMB',"vendors");
-        echo $time.'<br/>';
-        echo $vendor_id.'<br/>';
 
+        foreach ($rates as $curr){
 
-        foreach ($xml->Currency as $curr){
-
-            $code=$curr->attributes()["CurrencyCode"]."/TRY";
+            $code=$curr["code"];
             $parity_id=$this->idFounder($code,"parities");
-            $buy_rate=$curr->ForexBuying;
-            $sell_rate=$curr->ForexSelling;
-            echo $buy_rate.'<br/>';
+            $buy_rate=$curr["buy_rate"];
+            $sell_rate=$curr["sell_rate"];
 
-            echo $sell_rate.'<br/>';
+            echo "$time,$vendor_id,$parity_id, $curr[buy_rate],$curr[sell_rate] </br>";
+
 
             try{
-                DB::insert('insert into rates (time,vendor_id,parity_id,buy_rate,sell_rate) values(?,?,?,?,?)',["$time",$vendor_id,$parity_id, $buy_rate,$sell_rate]);
+                DB::insert('insert into rates (time,vendor_id,parity_id,buy_rate,sell_rate) values(?,?,?,?,?)',["$time",$vendor_id,$parity_id, $curr["buy_rate"],$curr["sell_rate"]]);
                 echo "Record inserted successfully.<br/>";
             }
             catch (QueryException $e){
@@ -124,7 +109,7 @@ class DatabaseFiller extends Controller {
 
         $query=$this->getrates();
         foreach ($query as $q) {
-            echo 'Time: '.$q->time.' VendorID: '.$q->vendor_id. ' ParityID: '.$q->parity_id.' BuyRate: '. $q->buy_rate.' SellRate: '. $q->sell_rate.'<br/>';
+            echo 'Time: '.$q->time.' VendorName: '.$q->vendor. ' ParityID: '.$q->parity.' BuyRate: '. $q->buy_rate.' SellRate: '. $q->sell_rate.'<br/>';
         }
 
         echo '<a href = "/main">Click Here</a> to go back.';

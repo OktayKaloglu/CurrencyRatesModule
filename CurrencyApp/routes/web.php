@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserInsertController;
 use App\Http\Controllers\DatabaseFiller;
 use App\Http\Controllers\UserProfile;
+use App\Http\Controllers\AdapterController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,7 +30,7 @@ Route::get('/user',UserProfile::class.'@showuser');
 Route::post('/user/token',UserProfile::class.'@apiToken');
 Route::post('/newToken',UserProfile::class.'@updateToken');
 
-Route::post('/parityfill',DatabaseFiller::class.'@parityfill');
+Route::post('/parityfill',AdapterController::class.'@adapterTCMB');
 Route::post('/showparity',DatabaseFiller::class.'@showparity');
 
 Route::post('/ratesfill',DatabaseFiller::class.'@ratesfill');
