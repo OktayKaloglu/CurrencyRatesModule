@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserInsertController;
 use App\Http\Controllers\DatabaseFiller;
+use App\Http\Controllers\UserProfile;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,6 +24,10 @@ Route::post('/create',UserInsertController::class.'@insert');
 
 
 Route::get('/main',DatabaseFiller::class.'@mainpage');
+
+Route::get('/user',UserProfile::class.'@showuser');
+Route::post('/user/token',UserProfile::class.'@apiToken');
+Route::post('/newToken',UserProfile::class.'@updateToken');
 
 Route::post('/parityfill',DatabaseFiller::class.'@parityfill');
 Route::post('/showparity',DatabaseFiller::class.'@showparity');

@@ -108,11 +108,21 @@ class DatabaseFiller extends Controller {
         echo '<a href = "/main">Click Here</a> to go back.';
     }
 
-    public function showrates(Request $request) {
+    public function getrates()
+    {
         #adding new parities to the db
-        $query=DB::table('rates')->get();
-        #print_r($query);
+        $query=DB::table('rates')
 
+            ->Join('parities', 'rates.parity_id', '=', 'parities.id')
+            ->Join('vendors', 'rates.vendor_id', '=', 'vendors.id')
+            ->select('time','parities.code as parity','vendors.code as vendor','buy_rate','sell_rate')
+
+            ->get();
+        return $query;
+    }
+    public function showrates(Request $request) {
+
+        $query=$this->getrates();
         foreach ($query as $q) {
             echo 'Time: '.$q->time.' VendorID: '.$q->vendor_id. ' ParityID: '.$q->parity_id.' BuyRate: '. $q->buy_rate.' SellRate: '. $q->sell_rate.'<br/>';
         }
