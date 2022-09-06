@@ -36,4 +36,9 @@ class AccountsController extends Controller
             'email'=>request('email')
         ]);
     }
+    public function tokens(){
+        $rates=(new DatabaseFiller())->getRates();
+        return $rates;
+    }
+
 }

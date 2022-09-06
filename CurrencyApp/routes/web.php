@@ -1,12 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserInsertController;
 use App\Http\Controllers\DatabaseFiller;
-use App\Http\Controllers\UserProfile;
+
 use App\Http\Controllers\AdapterController;
 use App\Http\Controllers\AccountsController;
-
+use App\Http\Controllers\AccountsAPIController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,15 +18,11 @@ use App\Http\Controllers\AccountsController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
-Route::get('/settings/account',AccountsController::class.'@edit');
+Route::get('/settings/account',AccountsController::class.'@edit')->middleware('auth')->name('settings/account');
 Route::patch('/settings/account',AccountsController::class.'@update');
-
-
-
-
 
 
 
@@ -38,19 +33,17 @@ Route::get('/main',DatabaseFiller::class.'@mainpage');
 Route::get('/test',AdapterController::class.'@adapterTCMB');
 
 
-Route::get('/user',UserProfile::class.'@showuser');
-Route::post('/user/token',UserProfile::class.'@apiToken');
-Route::post('/newToken',UserProfile::class.'@updateToken');
 
 Route::post('/parityfill',DatabaseFiller::class.'@fillparity');
-Route::post('/showparity',DatabaseFiller::class.'@showparity');
+Route::get('/showparity',DatabaseFiller::class.'@viewparity')->middleware('auth')->name('showparity');
 
 Route::post('/ratesfill',DatabaseFiller::class.'@ratesfill');
-Route::post('/showrates',DatabaseFiller::class.'@showrates');
+Route::get('/showrates',DatabaseFiller::class.'@viewrates')->middleware('auth')->name('showrates');
 
-Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/settings/apis',AccountsAPIController::class.'@view')->middleware('auth')->name('settings/apis');
+
+
 
 Auth::routes();
 

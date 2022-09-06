@@ -8,8 +8,28 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 
 class DatabaseFiller extends Controller {
+    public function view(){
+        return view('Accounts.apitokens',[
+            'user'=>auth()->user()
+        ]);
+
+    }
+
     public function mainpage() {
         return view('main');
+    }
+
+    public function viewparity(){
+        return view('data.parities',[
+            'user'=>auth()->user()
+        ]);
+
+    }
+    public function viewrates(){
+        return view('data.rates',[
+            'user'=>auth()->user()
+        ]);
+
     }
 
 
@@ -53,6 +73,7 @@ class DatabaseFiller extends Controller {
     }
 
     public function showparity(Request $request) {
+
         #adding new parities to the db
         $parities=DB::table('parities')->get();
         foreach ($parities as $parity) {

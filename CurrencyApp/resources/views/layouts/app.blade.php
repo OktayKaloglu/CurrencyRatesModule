@@ -49,12 +49,39 @@
                                 </li>
                             @endif
                         @else
-                            <li class="nav-item dropdown">
+                                <li class="nav-item">
+                                    <a class="nav-link"   href="{{route('showrates')}}">Rates</a>
+                                </li>
+                                <li class="nav-item dropdown">
+
+                                <li class="nav-item">
+                                    <a class="nav-link"   href="{{route('showparity')}}">Parities</a>
+                                </li>
+                                <li class="nav-item dropdown">
+
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
-                                </a>
 
+                                </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('settings/account') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('edit-user').submit();">
+                                        {{ __('Account Settings') }}
+                                    </a>
+                                    <form id="edit-user" action="{{ route('settings/account') }}" method="GET" class="d-none">
+                                        @csrf
+                                    </form>
+
+                                    <a class="dropdown-item" href="{{ route('settings/apis') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('user-apis').submit();">
+                                        {{ __('API Management') }}
+                                    </a>
+                                    <form id="user-apis" action="{{ route('settings/apis') }}" method="GET" class="d-none">
+                                        @csrf
+                                    </form>
+
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
