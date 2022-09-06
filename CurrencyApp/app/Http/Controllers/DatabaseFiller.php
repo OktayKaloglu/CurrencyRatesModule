@@ -37,7 +37,7 @@ class DatabaseFiller extends Controller {
           $code=$curr["code"]."/$baseCode";
           $name=$curr["name"]."/$baseName";
           echo $code.' '.$name.'</br>';
-
+        /*
           try{
               DB::insert('insert into parities (code,name) values(?,?)',[$code,$name]);
               echo "Record inserted successfully.<br/>";
@@ -46,7 +46,7 @@ class DatabaseFiller extends Controller {
               echo $e->getMessage(). '<br/>';
 
           }
-
+        */
         }
 
         echo '<a href = "/main">Click Here</a> to go back.';
@@ -77,7 +77,7 @@ class DatabaseFiller extends Controller {
 
             echo "$time,$vendor_id,$parity_id, $curr[buy_rate],$curr[sell_rate] </br>";
 
-
+            /*
             try{
                 DB::insert('insert into rates (time,vendor_id,parity_id,buy_rate,sell_rate) values(?,?,?,?,?)',["$time",$vendor_id,$parity_id, $curr["buy_rate"],$curr["sell_rate"]]);
                 echo "Record inserted successfully.<br/>";
@@ -86,7 +86,7 @@ class DatabaseFiller extends Controller {
                 echo $e->getMessage(). '<br/>';
 
             }
-
+            */
         }
 
 

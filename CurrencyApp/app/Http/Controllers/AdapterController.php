@@ -30,8 +30,8 @@ class AdapterController extends Controller {
 
      */
     public function adapterTCMB(){
-        #$url='https://www.tcmb.gov.tr/kurlar/202209/05092022.xml'; for test purpose.
-        $url=$this->TCMBURL();
+        $url='https://www.tcmb.gov.tr/kurlar/202209/05092022.xml'; #for test purpose.
+        #$url=$this->TCMBURL();
         $xml=null;
         try{
             $xml=simplexml_load_file($url);
@@ -70,28 +70,38 @@ class AdapterController extends Controller {
     #
     public function adapterECB(){
         $url='https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
-        $xml=simplexml_load_file($url) ;
-        $vendorCode="ECB";
-        $baseCode="EUR";
-        $baseName="EURO";
-        $parities=array();
-        $currencies=$xml->Cube->Cube;
-        $time=$currencies-> attributes()['time'];
-        $name="UNKNOWN";
-        $sell_rate=-1;
-        foreach ($currencies->Cube as $curr){
-            $code=(string)($curr->attributes()["currency"].'/'.$baseCode );
-            $buy_rate=(float)($curr->attributes()["rate"] );
-            array_push($parities, [
-                "code"=>$code,
-                "name"=>$name,
-                "buy_rate"=>$buy_rate,
-                "sell_rate"=>$sell_rate
-            ]);
+
+        $xml=null;
+        try{
+            $xml=simplexml_load_file($url);
         }
-        $DBFiller=new DatabaseFiller();
-        $DBFiller-> parityfill($baseCode,$baseName,$parities);
-        $DBFiller->ratesfill($time,$vendorCode,$parities);
+        catch (Throwable $e){
+            echo $e->getMessage(). '<br/>';
+        }
+        if($xml!=null) {
+
+            $vendorCode = "ECB";
+            $baseCode = "EUR";
+            $baseName = "EURO";
+            $parities = array();
+            $currencies = $xml->Cube->Cube;
+            $time = $currencies->attributes()['time'];
+            $name = "UNKNOWN";
+            $sell_rate = -1;
+            foreach ($currencies->Cube as $curr) {
+                $code = (string)($curr->attributes()["currency"] . '/' . $baseCode);
+                $buy_rate = (float)($curr->attributes()["rate"]);
+                array_push($parities, [
+                    "code" => $code,
+                    "name" => $name,
+                    "buy_rate" => $buy_rate,
+                    "sell_rate" => $sell_rate
+                ]);
+            }
+            $DBFiller = new DatabaseFiller();
+            $DBFiller->parityfill($baseCode, $baseName, $parities);
+            $DBFiller->ratesfill($time, $vendorCode, $parities);
+        }
     }
 
 

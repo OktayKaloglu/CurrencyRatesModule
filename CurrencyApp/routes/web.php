@@ -5,6 +5,8 @@ use App\Http\Controllers\UserInsertController;
 use App\Http\Controllers\DatabaseFiller;
 use App\Http\Controllers\UserProfile;
 use App\Http\Controllers\AdapterController;
+use App\Http\Controllers\AccountsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,10 +18,17 @@ use App\Http\Controllers\AdapterController;
 |
 */
 
-Route::get('/create',UserInsertController::class.'@usercreate');
+Route::get('/', function () {
+    return view('welcome');
+});
 
-Route::get('/insert',UserInsertController::class.'@insertform');
-Route::post('/create',UserInsertController::class.'@insert');
+Route::get('/settings/account',AccountsController::class.'@edit');
+Route::patch('/settings/account',AccountsController::class.'@update');
+
+
+
+
+
 
 
 
@@ -38,3 +47,11 @@ Route::post('/showparity',DatabaseFiller::class.'@showparity');
 
 Route::post('/ratesfill',DatabaseFiller::class.'@ratesfill');
 Route::post('/showrates',DatabaseFiller::class.'@showrates');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
