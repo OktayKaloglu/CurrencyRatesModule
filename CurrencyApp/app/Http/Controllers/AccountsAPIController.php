@@ -12,6 +12,12 @@ class AccountsAPIController extends Controller
 
         $this->middleware('auth');
     }
+    public function view(){
+        return view('accounts.apitokens',[
+            'user'=>auth()->user()
+        ]);
+
+    }
 
 
 

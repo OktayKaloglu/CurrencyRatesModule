@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientAPI;
+use App\Http\Controllers\DatabaseFiller;
 
 
 /*
@@ -21,4 +22,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::get("data",[ClientAPI::class,'getData']);
+Route::get("data",[DatabaseFiller::class,'getrates']);

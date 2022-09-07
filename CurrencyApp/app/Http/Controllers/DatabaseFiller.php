@@ -7,7 +7,10 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 
+
 class DatabaseFiller extends Controller {
+
+
     public function view(){
         return view('Accounts.apitokens',[
             'user'=>auth()->user()
@@ -31,13 +34,71 @@ class DatabaseFiller extends Controller {
         ]);
 
     }
+    public function viewvendors(){
+        return view('data.vendors',[
+            'user'=>auth()->user()
+        ]);
+
+    }
 
 
-    public function idFounder($name,$table){
+    public function fillVendors($vendors=null)
+    {
+        if ($vendors==null){
+             $vendors= array(
+                array(
+                    "name"=>"Türkiye Cumhuriyeti Merkez Bankası",
+                    "code"=>"TCMB"
+                ),
+                array(
+                    "name"=>"European Central Bank",
+                    "code"=>"ECB"
+                ),
+                array(
+                    "name"=>"Bank of Japan",
+                    "code"=>"BOJ"
+                ),
+                array(
+                    "name"=>"the Federal Reserve",
+                    "code"=>"FED"
+                ),
+            );
+
+        }
+
+
+        foreach ($vendors as $vendor) {
+
+
+              try{
+                  DB::insert('insert into vendors (code,name) values(?,?)',[$vendor["code"],$vendor["name"]]);
+                  echo "Record inserted successfully.<br/>";
+              }
+              catch (QueryException $e){
+                  echo $e->getMessage(). '<br/>';
+
+              }
+
+        }
+    }
+
+
+
+    public function getVendors(){
+
+        #adding new parities to the db
+        $query=DB::table('vendors')->get();
+
+        return $query;
+
+    }
+
+
+    public function idFounder($name,$table,$column="code"){
         try {
             $query=DB::table($table)->get();
             foreach ($query as $q) {
-                if ($q->code==$name){
+                if ($q->$column==$name){
                     return $q->id;
                 }
             }
@@ -49,69 +110,58 @@ class DatabaseFiller extends Controller {
     }
 
 
-    public function parityfill($baseCode,$baseName,$currencies) {
+
+
+
+
+
+    public function parityfill($vendor_id,$currencies) {
         #adding new parities to the db
 
         foreach ($currencies as $curr){
 
-          $code=$curr["code"]."/$baseCode";
-          $name=$curr["name"]."/$baseName";
-          echo $code.' '.$name.'</br>';
-        /*
           try{
-              DB::insert('insert into parities (code,name) values(?,?)',[$code,$name]);
+              DB::insert('insert into parities (code,name,vendor_id) values(?,?,?)',[$curr['code'],$curr['name'],$vendor_id]);
               echo "Record inserted successfully.<br/>";
           }
           catch (QueryException $e){
               echo $e->getMessage(). '<br/>';
 
           }
-        */
+
         }
 
-        echo '<a href = "/main">Click Here</a> to go back.';
     }
 
-    public function showparity(Request $request) {
+    public function showparity() {
 
         #adding new parities to the db
         $parities=DB::table('parities')->get();
+        /*
         foreach ($parities as $parity) {
             echo $parity->code.' '.$parity->name.'<br/>';
         }
 
         echo '<a href = "/main">Click Here</a> to go back.';
+        */
+        return $parities;
     }
 
-    public function ratesfill($time,$vendor,$rates) {
-
-        $vendor_id=$this->idFounder($vendor,"vendors");
 
 
+    public function ratesfill($rates) {
 
         foreach ($rates as $curr){
-
-            $code=$curr["code"];
-            $parity_id=$this->idFounder($code,"parities");
-            $buy_rate=$curr["buy_rate"];
-            $sell_rate=$curr["sell_rate"];
-
-            echo "$time,$vendor_id,$parity_id, $curr[buy_rate],$curr[sell_rate] </br>";
-
-            /*
             try{
-                DB::insert('insert into rates (time,vendor_id,parity_id,buy_rate,sell_rate) values(?,?,?,?,?)',["$time",$vendor_id,$parity_id, $curr["buy_rate"],$curr["sell_rate"]]);
+                $parity_id=$this->idFounder($curr["code"],"parities");
+                DB::insert('insert into rates (time,vendor_id,parity_id,buy_rate,sell_rate) values(?,?,?,?,?)',[$curr["time"],$curr["vendor_id"],$parity_id, $curr["buy_rate"],$curr["sell_rate"]]);
                 echo "Record inserted successfully.<br/>";
             }
             catch (QueryException $e){
                 echo $e->getMessage(). '<br/>';
-
             }
-            */
         }
 
-
-        echo '<a href = "/main">Click Here</a> to go back.';
     }
 
     public function getrates()
@@ -126,13 +176,55 @@ class DatabaseFiller extends Controller {
             ->get();
         return $query;
     }
-    public function showrates(Request $request) {
+    public function showrates( ) {
 
         $query=$this->getrates();
         foreach ($query as $q) {
             echo 'Time: '.$q->time.' VendorName: '.$q->vendor. ' ParityID: '.$q->parity.' BuyRate: '. $q->buy_rate.' SellRate: '. $q->sell_rate.'<br/>';
         }
 
-        echo '<a href = "/main">Click Here</a> to go back.';
+
     }
+
+
+    public function getUniqueParities(){
+        $query=DB::select(
+            DB::raw("
+
+                select *
+                from parities
+                group by('code')
+
+            ")
+
+        );
+        return $query;
+    }
+
+    public function prefrencesFill($email) {
+
+        $id=(new DatabaseFiller())->idFounder($email,'users','email');
+        $queries=$this->getUniqueParities();
+
+        foreach ($queries as $query) {
+
+            try {
+                DB::insert('insert into dummy_preferences (user_id,vendor_id,parity_id) values(?,?,?)', [$id, $query->vendor_id, $query->id]);
+                echo "Record inserted successfully.<br/>";
+
+            } catch (QueryException $e) {
+                echo $e->getMessage() . '<br/>';
+
+            }
+        }
+    }
+
+
+    public function test() {
+
+        print_r((new AdapterController())->adapterECB());
+        print_r((new AdapterController())->adapterTCMB());
+
+    }
+
 }

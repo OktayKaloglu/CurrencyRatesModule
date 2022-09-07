@@ -34,7 +34,7 @@
         </tr>
     </table>
 </form>
-<form action = "/showparity" method = "post">
+<form action = "/showparity" method = "get">
     <input type = "hidden" name = "_token" value = "<?php echo csrf_token(); ?>">
     <table>
 
@@ -54,7 +54,7 @@
         </tr>
     </table>
 </form>
-<form action = "/showrates" method = "post">
+<form action = "/showrates" method = "get">
     <input type = "hidden" name = "_token" value = "<?php echo csrf_token(); ?>">
     <table>
 

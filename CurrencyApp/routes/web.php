@@ -6,6 +6,7 @@ use App\Http\Controllers\DatabaseFiller;
 use App\Http\Controllers\AdapterController;
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\AccountsAPIController;
+use App\Http\Controllers\Auth\UserAuthController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,30 +22,35 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/settings/account',AccountsController::class.'@edit')->middleware('auth')->name('settings/account');
-Route::patch('/settings/account',AccountsController::class.'@update');
+
+Route::apiResource('/employee', 'EmployeeController')->middleware('auth:api');
+
+
+Route::GET('/settings/account',UserAuthController::class.'@edit')->middleware('auth')->name('settings/account');
+Route::patch('/settings/account',UserAuthController::class.'@update');
+
+Route::POST('/settings/preferences',AccountsController::class.'@editPreferences')->middleware('auth')->name('settings/preferences');
+
+Route::POST('/settings/apis',AccountsAPIController::class.'@view')->middleware('auth')->name('settings/apis');
+
+
+Route::get('/test',DatabaseFiller::class.'@test');
 
 
 
 
-
-Route::get('/main',DatabaseFiller::class.'@mainpage');
-
-Route::get('/test',AdapterController::class.'@adapterTCMB');
-
-
-
-Route::post('/parityfill',DatabaseFiller::class.'@fillparity');
 Route::get('/showparity',DatabaseFiller::class.'@viewparity')->middleware('auth')->name('showparity');
 
-Route::post('/ratesfill',DatabaseFiller::class.'@ratesfill');
+
 Route::get('/showrates',DatabaseFiller::class.'@viewrates')->middleware('auth')->name('showrates');
 
-
-Route::get('/settings/apis',AccountsAPIController::class.'@view')->middleware('auth')->name('settings/apis');
-
+Route::get('/showvendors',DatabaseFiller::class.'@viewvendors')->middleware('auth')->name('showvendors');
 
 
-Auth::routes();
+
+Auth::routes(
+
+
+);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

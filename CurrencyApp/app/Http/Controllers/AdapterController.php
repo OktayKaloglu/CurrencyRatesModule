@@ -11,12 +11,9 @@ use Throwable;
 
 class AdapterController extends Controller {
     /*
-    INSERT INTO currency_rates.vendors(name,code)
-    values('Türkiye Cumhuriyeti Merkez Bankası','TCMB')
-        .("European Central Bank","ECB")
+     * For new adapters, please update the  VendorsSeeder
+   */
 
-    ;
-*/
     #Adapters works with the DatabaseFiller controller. Pushes necessary information to the parityfill and ratesfill as associative array.
     /*example array:
     [
@@ -29,6 +26,28 @@ class AdapterController extends Controller {
     ]
 
      */
+
+    #run adapters for the first time
+    public function ParitySeeder()
+    {
+
+        $DBFiller=new DatabaseFiller();
+
+        $parities=$this->adapterTCMB();
+        $DBFiller-> parityfill($DBFiller->idFounder('TCMB','vendors'),$parities);
+
+        $parities=$this->adapterECB();
+        $DBFiller-> parityfill($DBFiller->idFounder('ECB','vendors'),$parities);
+
+    }
+
+    public function RatesSeeder()
+    {
+        $DF=new DatabaseFiller();
+        $DF->ratesfill( $this->adapterECB());
+        $DF->ratesfill($this->adapterTCMB());
+    }
+
     public function adapterTCMB(){
         $url='https://www.tcmb.gov.tr/kurlar/202209/05092022.xml'; #for test purpose.
         #$url=$this->TCMBURL();
@@ -40,22 +59,22 @@ class AdapterController extends Controller {
             echo $e->getMessage(). '<br/>';
         }
         if($xml!=null){
-            $vendorCode="TCMB";
+            $vendor_id=(new DatabaseFiller())->idFounder("TCMB","vendors");
             $baseCode="TRY";
             $baseName="TURKISH LIRA";
             $parities=array();
-            $time=$xml->attributes()["Date"];
+            $time=(string)$xml->attributes()["Date"];
             foreach ($xml->Currency as $curr){
                 array_push($parities, [
+                    "time"=>$time,
+                    "vendor_id"=>$vendor_id,
                     "code"=>$curr->attributes()["CurrencyCode"].'/'.$baseCode,
                     "name"=>$curr->CurrencyName.' '.$baseName,
                     "buy_rate"=>(float)$curr->ForexBuying,
                     "sell_rate"=>(float)$curr->ForexSelling,
                 ]);
             }
-            $DBFiller=new DatabaseFiller();
-            $DBFiller-> parityfill($baseCode,$baseName,$parities);
-            $DBFiller->ratesfill($time,$vendorCode,$parities);
+        return $parities;
         }
 
     }
@@ -78,6 +97,8 @@ class AdapterController extends Controller {
         catch (Throwable $e){
             echo $e->getMessage(). '<br/>';
         }
+        $vendor_id=(new DatabaseFiller())->idFounder("TCMB","vendors");
+
         if($xml!=null) {
 
             $vendorCode = "ECB";
@@ -85,22 +106,25 @@ class AdapterController extends Controller {
             $baseName = "EURO";
             $parities = array();
             $currencies = $xml->Cube->Cube;
-            $time = $currencies->attributes()['time'];
+            $time =(string) $currencies->attributes()['time'];
+
+            $time=substr($time, 5,2).'/'.substr($time, 8,2).'/'.substr($time,0,4);
             $name = "UNKNOWN";
             $sell_rate = -1;
             foreach ($currencies->Cube as $curr) {
                 $code = (string)($curr->attributes()["currency"] . '/' . $baseCode);
                 $buy_rate = (float)($curr->attributes()["rate"]);
                 array_push($parities, [
+
+                    "time"=>$time,
+                    "vendor_id"=>$vendor_id,
                     "code" => $code,
                     "name" => $name,
                     "buy_rate" => $buy_rate,
                     "sell_rate" => $sell_rate
                 ]);
             }
-            $DBFiller = new DatabaseFiller();
-            $DBFiller->parityfill($baseCode, $baseName, $parities);
-            $DBFiller->ratesfill($time, $vendorCode, $parities);
+            return $parities;
         }
     }
 

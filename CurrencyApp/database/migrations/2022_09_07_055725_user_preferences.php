@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('parities', function (Blueprint $table) {
+        Schema::create('user_preferences', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnUpdate();
             $table->foreignId('vendor_id')->constrained('vendors')->cascadeOnUpdate();
-            $table->string('name');
+            $table->foreignId('parity_id')->constrained('parities')->cascadeOnUpdate();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parities');
+        Schema::dropIfExists('user_preferences');
     }
 };
