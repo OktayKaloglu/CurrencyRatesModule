@@ -87,7 +87,7 @@
 
                                         <th scope="row">{{$api->vendor}}</th>
                                         <td>{{$api->parity}}</td>
-                                        <td> <button type="submit"  class="btn btn-primary" id={{$api->id}} name="id" value={{$api->id}}>Delete {{$api->id}}</button></td>
+                                        <td> <button type="submit"  class="btn btn-primary" id={{$api->id}} name="id" value={{$api->id}}>Delete </button></td>
 
                                 </tr>
                                 @php

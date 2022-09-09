@@ -4,20 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
-use Nyholm\Psr7\Response;
-use App\Http\Controllers\DatabaseFiller;
-use function PHPUnit\Framework\isEmpty;
-
 class Queries extends Controller
 {
 
-    public function viewrates(){
-        return view('data.rates',[
-            'user'=>auth()->user(),
-            'rates'=>$this->rates(auth()->user()->id)
-        ]);
 
-    }
 
     public function returnRates(Request $request){
         $rates=$this->rates($request->id,$request-> has('date') ? $request->date: null,  $request-> has('code')  ? $request->code : null);

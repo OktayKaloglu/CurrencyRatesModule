@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DatabaseFiller;
 
-use App\Http\Controllers\AdapterController;
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\AccountsAPIController;
 use App\Http\Controllers\Auth\UserAuthController;
