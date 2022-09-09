@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Http\Controllers\AdapterController;
-
+use App\Http\Controllers\DatabaseFiller;
 class DailyAdapter extends Command
 {
     /**
@@ -29,11 +29,12 @@ class DailyAdapter extends Command
     public function handle()
     {
         $adapters=new AdapterController();
+        $DF=new DatabaseFiller();
         if( $this->argument('adapter')=='TCMB'){
-            $adapters->adapterTCMB();
+            $DF->ratesfill ($adapters->adapterTCMB());
 
         }else if($this->argument('adapter')=="ECB") {
-            $adapters->adapterECB();
+            $DF->ratesfill($adapters->adapterECB());
 
         }
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\AdapterController;
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\AccountsAPIController;
 use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\Queries;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,18 +24,29 @@ Route::get('/', function () {
 });
 
 
-Route::apiResource('/employee', 'EmployeeController')->middleware('auth:api');
+Route::get('/test',DatabaseFiller::class.'@test')->middleware('auth');
+
+Route::get('/api/register', [AccountsAPIController::class, 'registerAction']);
 
 
 Route::GET('/settings/account',UserAuthController::class.'@edit')->middleware('auth')->name('settings/account');
 Route::patch('/settings/account',UserAuthController::class.'@update');
 
-Route::POST('/settings/preferences',AccountsController::class.'@editPreferences')->middleware('auth')->name('settings/preferences');
-
-Route::POST('/settings/apis',AccountsAPIController::class.'@view')->middleware('auth')->name('settings/apis');
 
 
-Route::get('/test',DatabaseFiller::class.'@test');
+Route::GET('/settings/apis',UserAuthController::class.'@editTokens')->middleware('auth')->name('settings/apis');
+
+Route::POST('/settings/apis/add',UserAuthController::class.'@generateToken')->middleware('auth');
+
+Route::POST('/settings/delapi',UserAuthController::class.'@deleteToken')->middleware('auth');
+
+
+Route::get('/settings/preferences',UserAuthController::class.'@editPreferences')->middleware('auth')->name('settings/preferences');
+Route::POST('/settings/preferences/add',UserAuthController::class.'@addPref')->middleware('auth');
+Route::POST('/settings/preferences/delete',UserAuthController::class.'@deletePref')->middleware('auth');
+
+
+
 
 
 
@@ -42,7 +54,12 @@ Route::get('/test',DatabaseFiller::class.'@test');
 Route::get('/showparity',DatabaseFiller::class.'@viewparity')->middleware('auth')->name('showparity');
 
 
-Route::get('/showrates',DatabaseFiller::class.'@viewrates')->middleware('auth')->name('showrates');
+Route::get('/showrates',Queries::class.'@viewrates')->middleware('auth')->name('showrates');
+
+Route::POST('/rates/search',Queries::class.'@returnRates')->middleware('auth');
+
+
+
 
 Route::get('/showvendors',DatabaseFiller::class.'@viewvendors')->middleware('auth')->name('showvendors');
 

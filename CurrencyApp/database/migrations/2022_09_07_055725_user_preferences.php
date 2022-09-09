@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('user_preferences', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('vendor_id')->constrained('vendors')->cascadeOnUpdate();
             $table->foreignId('parity_id')->constrained('parities')->cascadeOnUpdate();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

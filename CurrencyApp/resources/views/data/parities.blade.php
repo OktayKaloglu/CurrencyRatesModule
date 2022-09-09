@@ -14,14 +14,17 @@
                 use App\Http\Controllers\DatabaseFiller;
                 $DF=new DatabaseFiller();
                 $parities=$DF->showparity();
+                $row=1;
             @endphp
             @foreach($parities as $parity)
 
                 <tr>
-                    <th scope="row">{{$parity->id}}</th>
+                    <th scope="row">{{$row}}</th>
                     <td>{{$parity->code}}</td>
                     <td>{{$parity->name}}</td>
-
+                    @php
+                        $row++
+                    @endphp
                 </tr>
 
             @endforeach

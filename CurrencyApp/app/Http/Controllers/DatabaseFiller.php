@@ -28,12 +28,7 @@ class DatabaseFiller extends Controller {
         ]);
 
     }
-    public function viewrates(){
-        return view('data.rates',[
-            'user'=>auth()->user()
-        ]);
 
-    }
     public function viewvendors(){
         return view('data.vendors',[
             'user'=>auth()->user()
@@ -94,12 +89,12 @@ class DatabaseFiller extends Controller {
     }
 
 
-    public function idFounder($name,$table,$column="code"){
+    public function searchq($name,$table,$column="code"){
         try {
             $query=DB::table($table)->get();
             foreach ($query as $q) {
                 if ($q->$column==$name){
-                    return $q->id;
+                    return $q;
                 }
             }
 
@@ -115,13 +110,13 @@ class DatabaseFiller extends Controller {
 
 
 
-    public function parityfill($vendor_id,$currencies) {
+    public function parityfill($currencies) {
         #adding new parities to the db
 
         foreach ($currencies as $curr){
 
           try{
-              DB::insert('insert into parities (code,name,vendor_id) values(?,?,?)',[$curr['code'],$curr['name'],$vendor_id]);
+              DB::insert('insert into parities (code,name,vendor_id) values(?,?,?)',[$curr['code'],$curr['name'],$curr["vendor_id"]]);
               echo "Record inserted successfully.<br/>";
           }
           catch (QueryException $e){
@@ -153,8 +148,7 @@ class DatabaseFiller extends Controller {
 
         foreach ($rates as $curr){
             try{
-                $parity_id=$this->idFounder($curr["code"],"parities");
-                DB::insert('insert into rates (time,vendor_id,parity_id,buy_rate,sell_rate) values(?,?,?,?,?)',[$curr["time"],$curr["vendor_id"],$parity_id, $curr["buy_rate"],$curr["sell_rate"]]);
+                DB::insert('insert into rates (time,vendor_id,parity_id,buy_rate,sell_rate) values(?,?,?,?,?)',[$curr["time"],$curr["vendor_id"],$curr["parity_id"], $curr["buy_rate"],$curr["sell_rate"]]);
                 echo "Record inserted successfully.<br/>";
             }
             catch (QueryException $e){
@@ -203,7 +197,7 @@ class DatabaseFiller extends Controller {
 
     public function prefrencesFill($email) {
 
-        $id=(new DatabaseFiller())->idFounder($email,'users','email');
+        $id=($this->searchq($email,'users','email'))->id;
         $queries=$this->getUniqueParities();
 
         foreach ($queries as $query) {
@@ -226,5 +220,8 @@ class DatabaseFiller extends Controller {
         print_r((new AdapterController())->adapterTCMB());
 
     }
+
+
+
 
 }

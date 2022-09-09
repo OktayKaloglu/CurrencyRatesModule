@@ -83,7 +83,7 @@
                                                      document.getElementById('edit-preferences').submit();">
                                         {{ __('Currency Preferences') }}
                                     </a>
-                                    <form id="edit-preferences" action="{{ route('settings/preferences') }}" method="POST" class="d-none">
+                                    <form id="edit-preferences" action="{{ route('settings/preferences') }}" method="GET" class="d-none">
                                         @csrf
                                     </form>
 
@@ -92,7 +92,7 @@
                                                      document.getElementById('user-apis').submit();">
                                         {{ __('API Management') }}
                                     </a>
-                                    <form id="user-apis" action="{{ route('settings/apis') }}" method="POST" class="d-none">
+                                    <form id="user-apis" action="{{ route('settings/apis') }}" method="GET" class="d-none">
                                         @csrf
                                     </form>
 

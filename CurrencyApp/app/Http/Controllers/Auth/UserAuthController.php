@@ -8,8 +8,12 @@ use Illuminate\Http\Request;
 use http\Client\Curl\User;
 
 use Illuminate\Validation\Rule;
+use DB;
+use Illuminate\Support\Str;
+use Illuminate\Database\QueryException;
 use App\Http\Controllers\DatabaseFiller;class UserAuthController extends Controller
 {
+
     public function __construct()
     {
 
@@ -78,12 +82,7 @@ use App\Http\Controllers\DatabaseFiller;class UserAuthController extends Control
         ]);
 
     }
-    public function editPreferences(){
-        return view('accounts.preferences',[
-            'user'=>auth()->user()
-        ]);
 
-    }
     public function update(){
         $this->validate(request(),[
             'name'=>'required',
@@ -102,8 +101,123 @@ use App\Http\Controllers\DatabaseFiller;class UserAuthController extends Control
         ]);
         return $this->edit();
     }
-    public function tokens(){
-        $rates=(new DatabaseFiller())->getRates();
-        return $rates;
+
+
+    public function editTokens()
+    {
+        return view('accounts.apitokens', [
+            'user' => auth()->user()
+        ]);
     }
-}
+
+    public function tokensQuery($user_id){
+
+        return DB::table('users_api_tokens')
+            ->select('api_token','id')
+            ->where('user_id', '=', $user_id)
+            ->get();
+    }
+
+    public function generateToken(Request $request){
+        try{
+
+                DB::insert('insert into users_api_tokens (user_id,api_token) values(?,?)',[
+                    $request->user_id
+                    ,str::random(60) ]);
+
+            echo "Record inserted successfully.<br/>";
+        }
+        catch (QueryException $e){
+            echo $e->getMessage(). '<br/>';
+        }
+
+        return $this->editTokens();
+    }
+    public function deleteToken(Request $request){
+        try{
+
+
+            //DELETE FROM table_name WHERE condition;
+            DB::select(
+                    "DELETE FROM currency_rates.users_api_tokens
+                        WHERE users_api_tokens.id=$request->id
+                    "
+            );
+            echo "Record deleted successfully.<br/>";
+        }
+        catch (QueryException $e){
+            echo $e->getMessage(). '<br/>';
+        }
+
+        return $this->editTokens();
+    }
+
+
+
+
+    public function editPreferences(){
+        return view('accounts.preferences',[
+            'user'=>auth()->user()
+        ]);
+
+    }
+
+    public function prefQuery($user_id){
+
+        return DB::select("
+            SELECT user_preferences.id,user_preferences.user_id as 'user_id',vendors.code as 'vendor',parities.code as 'parity'
+            FROM currency_rates.user_preferences LEFT JOIN currency_rates.parities ON user_preferences.parity_id= parities.id
+            LEFT JOIN currency_rates.vendors ON user_preferences.vendor_id= vendors.id
+            WHERE currency_rates.user_preferences.user_id=$user_id  " );
+
+    }
+
+    public function addPref(Request $request){
+        if($request->vendor!='Vendor' || $request->parity!='Parity'||$request->id!=null){
+
+            try{
+                $df=new DatabaseFiller();
+                $vendor_id=$df->searchq("$request->vendor","vendors")->id;
+                $parity_id=$df->searchq("$request->parity","parities")->id;
+
+                DB::insert('insert into user_preferences (user_id,parity_id,vendor_id) values(?,?,?)',[
+                    $request->id,
+                    $parity_id,
+                    $vendor_id
+                ]);
+
+                echo "Record inserted successfully.<br/>";
+            }
+            catch (QueryException $e){
+                echo $e->getMessage(). '<br/>';
+            }
+
+        }
+
+        return $this->editPreferences();
+    }
+    public function deletePref(Request $request){
+        if($request->id!=null){
+
+            try{
+
+
+                //DELETE FROM table_name WHERE condition;
+                DB::select(
+                    "DELETE FROM currency_rates.user_preferences
+                            WHERE user_preferences.id=$request->id
+
+                        "
+                );
+                echo "Record deleted successfully.<br/>";
+            }
+            catch (QueryException $e){
+                echo $e->getMessage(). '<br/>';
+            }
+        }
+        return $this->editPreferences();
+    }
+
+
+
+    }

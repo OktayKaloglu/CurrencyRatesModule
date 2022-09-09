@@ -34,41 +34,45 @@ class AdapterController extends Controller {
         $DBFiller=new DatabaseFiller();
 
         $parities=$this->adapterTCMB();
-        $DBFiller-> parityfill($DBFiller->idFounder('TCMB','vendors'),$parities);
+        $DBFiller-> parityfill($parities);
 
         $parities=$this->adapterECB();
-        $DBFiller-> parityfill($DBFiller->idFounder('ECB','vendors'),$parities);
+        $DBFiller-> parityfill($parities);
 
     }
 
     public function RatesSeeder()
     {
         $DF=new DatabaseFiller();
-        $DF->ratesfill( $this->adapterECB());
+        $DF->ratesfill($this->adapterECB());
         $DF->ratesfill($this->adapterTCMB());
     }
 
     public function adapterTCMB(){
         $url='https://www.tcmb.gov.tr/kurlar/202209/05092022.xml'; #for test purpose.
         #$url=$this->TCMBURL();
-        $xml=null;
+
         try{
             $xml=simplexml_load_file($url);
         }
         catch (Throwable $e){
             echo $e->getMessage(). '<br/>';
         }
-        if($xml!=null){
-            $vendor_id=(new DatabaseFiller())->idFounder("TCMB","vendors");
+        if(!empty($xml)){
+            $vendor_id=((new DatabaseFiller())->searchq("TCMB","vendors"))->id;
             $baseCode="TRY";
             $baseName="TURKISH LIRA";
             $parities=array();
             $time=(string)$xml->attributes()["Date"];
             foreach ($xml->Currency as $curr){
+                $code=$curr->attributes()["CurrencyCode"].'/'.$baseCode;
+                $parity_id=((new DatabaseFiller())->searchq($code,"parities"))->id;
+
                 array_push($parities, [
                     "time"=>$time,
                     "vendor_id"=>$vendor_id,
-                    "code"=>$curr->attributes()["CurrencyCode"].'/'.$baseCode,
+                    "parity_id"=>$parity_id,
+                    "code"=>$code,
                     "name"=>$curr->CurrencyName.' '.$baseName,
                     "buy_rate"=>(float)$curr->ForexBuying,
                     "sell_rate"=>(float)$curr->ForexSelling,
@@ -78,6 +82,7 @@ class AdapterController extends Controller {
         }
 
     }
+
     public function TCMBURL(){
         $year=date('Y');
         $month=date('m');
@@ -90,18 +95,17 @@ class AdapterController extends Controller {
     public function adapterECB(){
         $url='https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
 
-        $xml=null;
+
         try{
             $xml=simplexml_load_file($url);
         }
         catch (Throwable $e){
             echo $e->getMessage(). '<br/>';
         }
-        $vendor_id=(new DatabaseFiller())->idFounder("TCMB","vendors");
+        $vendor_id=((new DatabaseFiller())->searchq("ECB","vendors"))->id;
 
-        if($xml!=null) {
+        if(!empty($xml)) {
 
-            $vendorCode = "ECB";
             $baseCode = "EUR";
             $baseName = "EURO";
             $parities = array();
@@ -113,11 +117,13 @@ class AdapterController extends Controller {
             $sell_rate = -1;
             foreach ($currencies->Cube as $curr) {
                 $code = (string)($curr->attributes()["currency"] . '/' . $baseCode);
+                $parity_id=((new DatabaseFiller())->searchq($code,"parities"))->id;
                 $buy_rate = (float)($curr->attributes()["rate"]);
                 array_push($parities, [
 
                     "time"=>$time,
                     "vendor_id"=>$vendor_id,
+                    "parity_id"=>$parity_id,
                     "code" => $code,
                     "name" => $name,
                     "buy_rate" => $buy_rate,
