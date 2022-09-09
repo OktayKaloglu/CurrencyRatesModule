@@ -39,9 +39,7 @@ Database Schema:
 ![image](https://user-images.githubusercontent.com/101494182/189295288-19f4e3de-a149-46d2-88ef-ce9602948f05.png)
 ![image](https://user-images.githubusercontent.com/101494182/189295308-fbd80ca5-15e1-454f-b7a1-56cb030fa5a1.png)
 
-</p>
-<p>
+
 ->api tokens:
 ![image](https://user-images.githubusercontent.com/101494182/189295370-24d1ab15-80ce-496b-9e67-bc1d6b503c55.png)
 
-</p>
