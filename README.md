@@ -20,8 +20,6 @@ Database Schema:
 ![image](https://user-images.githubusercontent.com/101494182/189293572-78d48f0d-5c10-4b32-b1df-43e05907c468.png)
 ->after login:
 ![image](https://user-images.githubusercontent.com/101494182/189293771-1679f54c-37ec-492f-b7d1-7bf41d501476.png)
-->after login:
-![image](https://user-images.githubusercontent.com/101494182/189293771-1679f54c-37ec-492f-b7d1-7bf41d501476.png)
 ->rates:
 ![image](https://user-images.githubusercontent.com/101494182/189293838-f95f36d3-abb2-4afe-ae1c-a2fce7b95fd4.png)
 ->search:
