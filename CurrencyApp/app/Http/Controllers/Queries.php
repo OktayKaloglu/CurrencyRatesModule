@@ -20,7 +20,8 @@ class Queries extends Controller
     }
 
     public function returnRates(Request $request){
-        $rates=$this->rates($request->id,$request->date,$request->code);
+        $rates=$this->rates($request->id,$request-> has('date') ? $request->date: null,  $request-> has('code')  ? $request->code : null);
+
         return view('data.searchrates',[
             'user'=>auth()->user(),
             'rates'=>$rates,
@@ -79,7 +80,7 @@ class Queries extends Controller
         if(!empty($date)){
             $baseQuery="$baseQuery and rates.time='$date'";
         }
-        if(!empty($code) ){
+        if(!empty($code && $code!='Parity') ){
             $baseQuery="$baseQuery and parities.code='$code'";
         }
 
@@ -103,10 +104,10 @@ class Queries extends Controller
             INNER JOIN currency_rates.user_preferences ON rates.vendor_id = user_preferences.vendor_id and rates.parity_id= user_preferences.parity_id
             WHERE currency_rates.user_preferences.user_id=$user_id" ;
 
-        if($request->has("date") && !empty($request->date)){
+        if($request->has("date") && !empty($request->date )){
             $baseQuery="$baseQuery and rates.time='$request->date'";
         }
-        if($request->has("code") && !empty($request->code) ){
+            if($request->has("code") && !empty($request->code  ) ){
             $baseQuery="$baseQuery and parities.code='$request->code'";
         }
 

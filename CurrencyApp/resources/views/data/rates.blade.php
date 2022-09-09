@@ -54,6 +54,8 @@
         </thead>
         <tbody>
         @php
+
+
             $rates=$que->rates(auth()->user()->id) ;
 
             $row=1;
