@@ -56,7 +56,7 @@
         @php
 
 
-            $rates=$que->rates(auth()->user()->id) ;
+            $rates=$que->rates(auth()->user()->id);
 
             $row=1;
         @endphp

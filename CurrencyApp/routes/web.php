@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DatabaseFiller;
 
 use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\AccountsAPIController;
@@ -23,9 +22,6 @@ Route::get('/', function () {
 });
 
 
-Route::get('/test',DatabaseFiller::class.'@test')->middleware('auth');
-
-Route::get('/api/register', [AccountsAPIController::class, 'registerAction']);
 
 
 Route::GET('/settings/account',UserAuthController::class.'@edit')->middleware('auth')->name('settings/account');
@@ -50,7 +46,7 @@ Route::POST('/settings/preferences/delete',UserAuthController::class.'@deletePre
 
 
 
-Route::get('/showparity',DatabaseFiller::class.'@viewparity')->middleware('auth')->name('showparity');
+Route::get('/showparity',Queries::class.'@viewparity')->middleware('auth')->name('showparity');
 
 
 Route::get('/showrates',Queries::class.'@viewrates')->middleware('auth')->name('showrates');
@@ -60,7 +56,7 @@ Route::POST('/rates/search',Queries::class.'@returnRates')->middleware('auth');
 
 
 
-Route::get('/showvendors',DatabaseFiller::class.'@viewvendors')->middleware('auth')->name('showvendors');
+Route::get('/showvendors',Queries::class.'@viewvendors')->middleware('auth')->name('showvendors');
 
 
 

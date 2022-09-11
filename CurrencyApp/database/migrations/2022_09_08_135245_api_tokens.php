@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('users_api_tokens', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_api_tokens');
+        Schema::dropIfExists('users_api_tokens');
     }
 };

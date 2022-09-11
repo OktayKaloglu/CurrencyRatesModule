@@ -1,12 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use DB;
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
-use Illuminate\Database\QueryException;
-use App\Http\Controllers\DatabaseFiller;
 use Throwable;
 
 class AdapterController extends Controller {
@@ -26,6 +21,10 @@ class AdapterController extends Controller {
     ]
 
      */
+    const baseURLs = [
+        'TCMB'=>"https://www.tcmb.gov.tr/kurlar/",
+        'ECB'=>"https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
+    ];
 
     #run adapters for the first time
     public function ParitySeeder()
@@ -33,10 +32,10 @@ class AdapterController extends Controller {
 
         $DBFiller=new DatabaseFiller();
 
-        $parities=$this->adapterTCMB();
+        $parities=$this->adapterTCMB('https://www.tcmb.gov.tr/kurlar/202209/05092022.xml');
         $DBFiller-> parityfill($parities);
 
-        $parities=$this->adapterECB();
+        $parities=$this->adapterECB(self::baseURLs["ECB"]);
         $DBFiller-> parityfill($parities);
 
     }
@@ -44,13 +43,12 @@ class AdapterController extends Controller {
     public function RatesSeeder()
     {
         $DF=new DatabaseFiller();
-        $DF->ratesfill($this->adapterECB());
-        $DF->ratesfill($this->adapterTCMB());
+        $DF->ratesfill($this->adapterTCMB('https://www.tcmb.gov.tr/kurlar/202209/05092022.xml'));
+        $DF->ratesfill($this->adapterECB(self::baseURLs["ECB"]));
     }
 
-    public function adapterTCMB(){
-        $url='https://www.tcmb.gov.tr/kurlar/202209/05092022.xml'; #for test purpose.
-        #$url=$this->TCMBURL();
+    public function adapterTCMB($url){
+
 
         try{
             $xml=simplexml_load_file($url);
@@ -59,14 +57,14 @@ class AdapterController extends Controller {
             echo $e->getMessage(). '<br/>';
         }
         if(!empty($xml)){
-            $vendor_id=((new DatabaseFiller())->searchq("TCMB","vendors"))->id;
+            $vendor_id=((new Queries())->searchq("TCMB","vendors"))->id;
             $baseCode="TRY";
             $baseName="TURKISH LIRA";
             $parities=array();
             $time=(string)$xml->attributes()["Date"];
             foreach ($xml->Currency as $curr){
                 $code=$curr->attributes()["CurrencyCode"].'/'.$baseCode;
-                $parity_id=((new DatabaseFiller())->searchq($code,"parities"))->id;
+                $parity_id=((new Queries())->searchq($code,"parities"))->id;
 
                 array_push($parities, [
                     "time"=>$time,
@@ -83,17 +81,17 @@ class AdapterController extends Controller {
 
     }
 
-    public function TCMBURL(){
+    public function TCMBURL(){//TCMB's url for today
         $year=date('Y');
         $month=date('m');
         $day=date('d');
-        $url='https://www.tcmb.gov.tr/kurlar/'.$year.$month.'/'.$day.$month.$year.'.xml';
+        $url=self::baseURLs["TCMB"].$year.$month.'/'.$day.$month.$year.'.xml';
         return $url;
+
     }
 
     #
-    public function adapterECB(){
-        $url='https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml';
+    public function adapterECB($url){
 
 
         try{
@@ -102,7 +100,7 @@ class AdapterController extends Controller {
         catch (Throwable $e){
             echo $e->getMessage(). '<br/>';
         }
-        $vendor_id=((new DatabaseFiller())->searchq("ECB","vendors"))->id;
+        $vendor_id=((new Queries())->searchq("ECB","vendors"))->id;
 
         if(!empty($xml)) {
 
@@ -117,7 +115,8 @@ class AdapterController extends Controller {
             $sell_rate = -1;
             foreach ($currencies->Cube as $curr) {
                 $code = (string)($curr->attributes()["currency"] . '/' . $baseCode);
-                $parity_id=((new DatabaseFiller())->searchq($code,"parities"))->id;
+                $parity_id=((new Queries())->searchq($code,"parities"))->id;
+
                 $buy_rate = (float)($curr->attributes()["rate"]);
                 array_push($parities, [
 
@@ -138,3 +137,4 @@ class AdapterController extends Controller {
 
 
 }
+

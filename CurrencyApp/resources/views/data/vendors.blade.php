@@ -11,8 +11,8 @@
         </thead>
         <tbody>
         @php
-            use App\Http\Controllers\DatabaseFiller;
-            $DF=new DatabaseFiller();
+            use App\Http\Controllers\Queries;
+            $DF=new Queries();
             $vendors=$DF->getVendors();
             $row =1;
         @endphp
