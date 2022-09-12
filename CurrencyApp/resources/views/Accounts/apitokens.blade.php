@@ -11,7 +11,7 @@
                     <div class="card-header">{{ __('API') }}</div>
 
                     <div class="form-group1" id="1" >
-                        <form method="POST" action="/settings/preferences/add" >
+                        <form method="POST" action="/settings/apis/add" >
                             {{csrf_field()}}
                             {{method_field('POST')}}
 
@@ -19,7 +19,7 @@
                         </form>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="/settings/preferences/delete">
+                        <form method="POST" action="/settings/apis/delete">
                             {{csrf_field()}}
                             {{method_field('POST')}}
 

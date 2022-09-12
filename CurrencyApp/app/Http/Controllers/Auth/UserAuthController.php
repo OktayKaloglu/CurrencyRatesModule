@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Queries;
 use Illuminate\Http\Request;
 
 use http\Client\Curl\User;
@@ -11,7 +12,8 @@ use Illuminate\Validation\Rule;
 use DB;
 use Illuminate\Support\Str;
 use Illuminate\Database\QueryException;
-use App\Http\Controllers\DatabaseFiller;class UserAuthController extends Controller
+
+class UserAuthController extends Controller
 {
 
     public function __construct()
@@ -120,10 +122,8 @@ use App\Http\Controllers\DatabaseFiller;class UserAuthController extends Control
 
     public function generateToken(Request $request){
         try{
-
                 DB::insert('insert into users_api_tokens (user_id,api_token) values(?,?)',[
-                    $request->user_id
-                    ,str::random(60) ]);
+                    $request->user_id , str::random(60) ]);
 
             echo "Record inserted successfully.<br/>";
         }
@@ -176,9 +176,9 @@ use App\Http\Controllers\DatabaseFiller;class UserAuthController extends Control
         if($request->vendor!='Vendor' || $request->parity!='Parity'||$request->id!=null){
 
             try{
-                $df=new DatabaseFiller();
-                $vendor_id=$df->searchq("$request->vendor","vendors")->id;
-                $parity_id=$df->searchq("$request->parity","parities")->id;
+                $qr=new Queries();
+                $vendor_id=$qr->searchq("$request->vendor","vendors")->id;
+                $parity_id=$qr->searchq("$request->parity","parities")->id;
 
                 DB::insert('insert into user_preferences (user_id,parity_id,vendor_id) values(?,?,?)',[
                     $request->id,

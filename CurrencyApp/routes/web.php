@@ -33,7 +33,7 @@ Route::GET('/settings/apis',UserAuthController::class.'@editTokens')->middleware
 
 Route::POST('/settings/apis/add',UserAuthController::class.'@generateToken')->middleware('auth');
 
-Route::POST('/settings/delapi',UserAuthController::class.'@deleteToken')->middleware('auth');
+Route::POST('/settings/apis/delete',UserAuthController::class.'@deleteToken')->middleware('auth');
 
 
 Route::get('/settings/preferences',UserAuthController::class.'@editPreferences')->middleware('auth')->name('settings/preferences');
