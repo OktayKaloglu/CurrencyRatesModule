@@ -164,7 +164,6 @@ class Queries extends Controller
 
     public function apiRates(Request $request ){
         $user_id=($this->searchq($request->api_token,"users_api_tokens","api_token"))->user_id;
-
         return response()->json($this->rates($user_id,$request->date,$request->code));
 
     }

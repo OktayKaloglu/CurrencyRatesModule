@@ -31,7 +31,7 @@ class DailyAdapter extends Command
         $adapters=new AdapterController();
         $DF=new DatabaseFiller();
         if( $this->argument('adapter')=='TCMB'){
-            $DF->ratesfill ($adapters->adapterTCMB($adapters->TCMBURL()));
+            $DF->ratesfill ($adapters->adapterTCMB($adapters->generateTcmbUrl()));
 
         }else if($this->argument('adapter')=="ECB") {
             $DF->ratesfill($adapters->adapterECB());

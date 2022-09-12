@@ -26,8 +26,7 @@ class AccountsAPIController extends Controller
         ]);
 
         $token = $user->createToken('Laravel-9-Passport-Auth')->accessToken;
-        print_r(response()->json(['token' => $token], 200)) ;
-        die;
+
         return response()->json(['token' => $token], 200);
     }
 

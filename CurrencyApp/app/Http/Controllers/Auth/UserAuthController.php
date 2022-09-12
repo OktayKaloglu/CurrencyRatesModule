@@ -122,10 +122,16 @@ class UserAuthController extends Controller
 
     public function generateToken(Request $request){
         try{
-                DB::insert('insert into users_api_tokens (user_id,api_token) values(?,?)',[
-                    $request->user_id , str::random(60) ]);
+            DB::table("users_api_tokens")
+                ->insert([
+                    "user_id"=> $request->user_id,
+                    "api_token"=>str::random(60),
+
+                ]) ;
 
             echo "Record inserted successfully.<br/>";
+
+
         }
         catch (QueryException $e){
             echo $e->getMessage(). '<br/>';
@@ -135,15 +141,11 @@ class UserAuthController extends Controller
     }
     public function deleteToken(Request $request){
         try{
-
-
-            //DELETE FROM table_name WHERE condition;
-            DB::select(
-                    "DELETE FROM currency_rates.users_api_tokens
-                        WHERE users_api_tokens.id=$request->id
-                    "
-            );
+            DB::table("users_api_tokens")
+                ->where('id','=',$request->id)
+                ->delete();
             echo "Record deleted successfully.<br/>";
+
         }
         catch (QueryException $e){
             echo $e->getMessage(). '<br/>';

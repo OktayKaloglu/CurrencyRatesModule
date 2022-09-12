@@ -23,6 +23,7 @@ class DatabaseFiller extends Controller {
                 ["name"=>'Bank of Japan',"code"=>'BOJ'],
                 ["name"=>'The Federal Reserve',"code"=>'FED'],
             ]);
+            echo "Record inserted successfully.<br/>";
         }catch (QueryException $e){
             echo $e->getMessage(). '<br/>';
 
@@ -37,8 +38,14 @@ class DatabaseFiller extends Controller {
         foreach ($currencies as $curr){
 
           try{
-              DB::insert('insert into parities (code,name,vendor_id) values(?,?,?)',[$curr['code'],$curr['name'],$curr["vendor_id"]]);
+              DB::table("parities")
+                  ->insert([
+                      "code"=>$curr['code'],
+                      "name"=>$curr['name'],
+                      "vendor_id"=>$curr["vendor_id"],
+                  ]) ;
               echo "Record inserted successfully.<br/>";
+
           }
           catch (QueryException $e){
               echo $e->getMessage(). '<br/>';
@@ -57,7 +64,15 @@ class DatabaseFiller extends Controller {
 
         foreach ($rates as $curr){
             try{
-                DB::insert('insert into rates (time,vendor_id,parity_id,buy_rate,sell_rate) values(?,?,?,?,?)',[$curr["time"],$curr["vendor_id"],$curr["parity_id"], $curr["buy_rate"],$curr["sell_rate"]]);
+                DB::table("rates")
+                    ->insert([
+                        "time"=> $curr["time"],
+                        "vendor_id"=>$curr["vendor_id"],
+                        "parity_id"=>$curr["parity_id"],
+                        "buy_rate"=>$curr["buy_rate"],
+                        "sell_rate"=>$curr["sell_rate"],
+                    ]) ;
+
                 echo "Record inserted successfully.<br/>";
             }
             catch (QueryException $e){

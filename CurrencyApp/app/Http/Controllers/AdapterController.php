@@ -81,7 +81,7 @@ class AdapterController extends Controller {
 
     }
 
-    public function TCMBURL(){//TCMB's url for today
+    public function generateTcmbUrl(){//TCMB's url for today
         $year=date('Y');
         $month=date('m');
         $day=date('d');
