@@ -12,7 +12,7 @@ class DailyAdapter extends Command
      *
      * @var string
      */
-    protected $signature = 'adapter:daily {adapter}';
+    protected $signature = 'adapter:daily';
 
     /**
      * The console command description.
@@ -28,15 +28,27 @@ class DailyAdapter extends Command
      */
     public function handle()
     {
-        $adapters=new AdapterController();
-        $DF=new DatabaseFiller();
-        if( $this->argument('adapter')=='TCMB'){
-            $DF->ratesfill ($adapters->adapterTCMB($adapters->generateTcmbUrl()));
+        $df=new DatabaseFiller();
+        $adapterPath="App\Http\Controllers\Adapters\\";
 
-        }else if($this->argument('adapter')=="ECB") {
-            $DF->ratesfill($adapters->adapterECB());
+        $config = file_get_contents(".\app\Console\Commands\adapterConfig.json");
+        $adapterName = json_decode($config, true);
 
+        $adapters=array();
+        foreach ($adapterName as $adapter){
+            array_push($adapters,new ($adapterPath.$adapter["className"]));
+            //echo $adapterPath.$adapter["className"];
         }
+
+        foreach ($adapters as $adapter){
+            $rates=$adapter->gather();
+            if(!empty($rates)){
+                $df->ratesfill ($rates);
+            }else{
+                echo 'its empty';
+            }
+        }
+
 
     }
 }

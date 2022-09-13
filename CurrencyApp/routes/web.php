@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AccountsController;
-use App\Http\Controllers\AccountsAPIController;
+use App\Http\Controllers\Adapters\AdapterTcmb;
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Queries;
 /*
@@ -22,7 +22,7 @@ Route::get('/', function () {
 });
 
 
-
+Route::GET('/test',AdapterTcmb::class.'@gather');
 
 Route::GET('/settings/account',UserAuthController::class.'@edit')->middleware('auth')->name('settings/account');
 Route::patch('/settings/account',UserAuthController::class.'@update');

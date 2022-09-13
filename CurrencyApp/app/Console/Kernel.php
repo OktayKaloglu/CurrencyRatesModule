@@ -15,10 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('adapter:daily TCMB')->dailyAt('15:31');#TCMB announce the new  rates every day ay 15:30 TRT
-        $schedule->command('adapter:daily ECB')->dailyAt('15:16');#ECB announce the new  rates every day ay 14:15 CET(15:15 TRT)
-
-        $schedule->command('adapter:daily TCMB')->everyMinute()->appendOutputTo('adapter.log');
+        $schedule->command('adapter:daily')->everyMinute()->appendOutputTo('adapter.log');#schedule the adapters
 
     }
 
