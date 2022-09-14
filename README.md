@@ -9,8 +9,14 @@ An currency rate module for e-commerce companies.
 <p>- Users can create api tokens and can retrive rates from the api /api/rates?api_token= &date= &code=. Requests require api_token for authorization purposes .Request        dosen't require any code or date values, if request does not have any of them , response won't be filtered for them. Date has to be m/d/y formation such as        09/05/2022, Codes has to be majorcode/minorcode formation such as EUR/TRY.
 
 
+With the help of scheduling, adapters gather the information only after thier announcement time. Newly added apdapters has to configured at the adapterConfig.json by their class name for scheduling automation.
+Adapter's design:
+![MicrosoftTeams-image](https://user-images.githubusercontent.com/101494182/190076581-584e0230-e5b1-4059-97e7-75a7a067460e.png)
+
+
+
 Database Schema:
-![image](https://user-images.githubusercontent.com/101494182/189290437-5e0eeec7-26a9-490d-947d-7130410ac9b8.jpg)
+![Untitled (1)](https://user-images.githubusercontent.com/101494182/190075986-5242142d-2e8f-4b91-8fa6-7bd822f31ee3.png)
 
 
 
