@@ -22,7 +22,6 @@ abstract class AdapterAbstract extends Controller implements AdapterInterface {
     }
     public function timeControl($time):bool{
         //if the time right for the adapter it will return ture else false
-        //echo date("H").' '.date("m").' '.date("S").'\n';
 
         if(time()>=$time){
             echo "time is now\n";
@@ -35,7 +34,7 @@ abstract class AdapterAbstract extends Controller implements AdapterInterface {
     //checks whether time is reached,and tries to return a valid url
     public function checks($urls,$announcementTime){
         $time=mktime($announcementTime[0],$announcementTime[1],$announcementTime[2]);
-
+        //echo "$time \n".time()."\n";
         if($this->timeControl($time)){
             return $this->checkConnection($urls);//get a working url
         }

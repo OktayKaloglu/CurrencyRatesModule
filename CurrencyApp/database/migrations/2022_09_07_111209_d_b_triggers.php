@@ -43,8 +43,8 @@ return new class extends Migration
 
         #preferences
 
-        DB::unprepared('DROP TRIGGER IF EXISTS `user_preferences_trigger`');
-        DB::unprepared("CREATE TRIGGER user_preferences_trigger
+        DB::unprepared('DROP TRIGGER IF EXISTS `user_preferences_duplicate_trigger`');
+        DB::unprepared("CREATE TRIGGER user_preferences_duplicate_trigger
             BEFORE INSERT ON user_preferences
             FOR EACH ROW
             BEGIN
@@ -73,7 +73,7 @@ return new class extends Migration
                                 FROM parities
                                 group by parities.code
                             );
-                            
+
 
 
                     END
@@ -93,7 +93,7 @@ return new class extends Migration
         Schema::dropIfExists('rates_duplicate_trigger');
         Schema::dropIfExists('parities_duplicate_trigger');
         Schema::dropIfExists('user_preferences_trigger');
-
+        Schema::dropIfExists('user_preferences_duplicate_trigger');
 
 
 
