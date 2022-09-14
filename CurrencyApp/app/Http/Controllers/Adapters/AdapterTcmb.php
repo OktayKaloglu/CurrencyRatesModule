@@ -12,22 +12,14 @@ class AdapterTcmb extends AdapterAbstract
     private $announcementTime=array(15,30,5);
     private $announcementStyle="daily";//daily, monthly,hourly,every minute
 
-    public function checks(){
-        $time=mktime($this->announcementTime[0],$this->announcementTime[1],$this->announcementTime[2]);
 
-        if($this->timeControl($time)){
-
-            $urls=$this->generateTcmbUrl($this->adapterUrls);
-            array_push($urls,"https://www.tcmb.gov.tr/kurlar/202209/05092022.xml");
-            return $this->checkConnection($urls);//get a working url
-        }
-
-        return "";
-    }
 
     public function gather()
     {
-        $url=$this->checks();
+
+        $urls=$this->generateTcmbUrl($this->adapterUrls);
+        array_push($urls,"https://www.tcmb.gov.tr/kurlar/202209/05092022.xml");
+        $url=$this->checks($urls,$this->announcementTime);
         if (!empty($url)){
             $xml=simplexml_load_file($url);
             $vendor_id=((new Queries())->searchq($this->adapterCode,"vendors"))->id;

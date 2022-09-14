@@ -9,7 +9,7 @@ abstract class AdapterAbstract extends Controller implements AdapterInterface {
     private $baseCode;
     private $baseName;
     private $adapterUrls;
-    private $announcementTime;//unix time mktime(h,m,s)/(15,30,15) ,use s as delay
+    private $announcementTime;// an array that contains (h,m,s)/(15,30,15) to make an unix time us second as delay
     private $announcementStyle;//daily, monthly,hourly,every minute
     public function checkConnection($urls): string
     {
@@ -22,18 +22,28 @@ abstract class AdapterAbstract extends Controller implements AdapterInterface {
     }
     public function timeControl($time):bool{
         //if the time right for the adapter it will return ture else false
+        //echo date("H").' '.date("m").' '.date("S").'\n';
 
-        if(mktime(0)>=$time){
-
+        if(time()>=$time){
+            echo "time is now\n";
             return true;
+
         }
         return false;
     }
 
+    //checks whether time is reached,and tries to return a valid url
+    public function checks($urls,$announcementTime){
+        $time=mktime($announcementTime[0],$announcementTime[1],$announcementTime[2]);
+
+        if($this->timeControl($time)){
+            return $this->checkConnection($urls);//get a working url
+        }
+
+        return "";
+    }
 
     abstract public function gather();
-    abstract public function checks();//checks the url is exists and the announcement time is met
-
 
 }
 

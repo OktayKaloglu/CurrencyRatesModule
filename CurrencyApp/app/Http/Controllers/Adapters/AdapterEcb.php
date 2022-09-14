@@ -12,19 +12,11 @@ class AdapterEcb  extends AdapterAbstract
     private $announcementTime=array(17,00,5);
     private $announcementStyle="daily";//daily, monthly,hourly,every minute
 
-    public function checks(){
-        $time=mktime($this->announcementTime[0],$this->announcementTime[1],$this->announcementTime[2]);
 
-        if($this->timeControl($time)){
-            return $this->checkConnection($this->adapterUrls);//get a working url
-        }
-
-        return "";
-    }
 
     public function gather()
     {
-        $url=$this->checks();
+        $url=$this->checks($this->adapterUrls,$this->announcementTime);
         if (!empty($url)){
             $xml=simplexml_load_file($url);
             $vendor_id=((new Queries())->searchq($this->adapterCode,"vendors"))->id;

@@ -45,7 +45,7 @@ class DailyAdapter extends Command
             if(!empty($rates)){
                 $df->ratesfill ($rates);
             }else{
-                echo 'its empty';
+                echo "its empty\n";
             }
         }
 
