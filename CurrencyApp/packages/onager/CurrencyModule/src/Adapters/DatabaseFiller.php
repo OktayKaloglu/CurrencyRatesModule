@@ -11,6 +11,9 @@ use Illuminate\Database\QueryException;
 class DatabaseFiller extends Controller {
 
 
+
+
+
     public function fillVendors($vendors=null)
     {
         try{
@@ -23,8 +26,11 @@ class DatabaseFiller extends Controller {
             echo "Record inserted successfully.<br/>";
         }catch (QueryException $e){
             echo $e->getMessage(). '<br/>';
+
         }
+
     }
+
 
     public function parityfill($currencies) {
         #adding new parities to the db

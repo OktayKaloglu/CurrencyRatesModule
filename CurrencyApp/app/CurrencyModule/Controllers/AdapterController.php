@@ -2,11 +2,9 @@
 namespace App\Http\Controllers;
 
 use App\CurrencyModule\Adapters\AdapterTcmb;
-use App\CurrencyModule\Adapters\GatherJob;
 use App\Http\Controllers\Adapters\AdapterEcb;
 use App\Http\Requests;
-use Throwable;
-
+use App\CurrencyModule\Adapters\GatherJob;
 
 class AdapterController extends Controller {
     /*
@@ -37,19 +35,22 @@ class AdapterController extends Controller {
         $DBFiller=new DatabaseFiller();
         $adapters=(new GatherJob())->getAdapters("App\CurrencyModule\Adapters\\" , ".\app\CurrencyModule\Adapters\adapterConfig.json");
         foreach ($adapters as $adapter){
-            $DBFiller-> parityfill(($adapter)->gather(true));
+            $rates=$adapter->gather(true);
+            $DBFiller->parityfill($rates);
         }
-
 
     }
 
     public function RatesSeeder()
     {
-        $DF=new DatabaseFiller();
+        $DBFiller=new DatabaseFiller();
         $adapters=(new GatherJob())->getAdapters("App\CurrencyModule\Adapters\\" , ".\app\CurrencyModule\Adapters\adapterConfig.json");
         foreach ($adapters as $adapter){
-            $DF-> ratesfill(($adapter)->gather(true));
+            $rates=$adapter->gather(true);
+            $DBFiller->ratesfill($rates);
+
         }
+
     }
 
 

@@ -29,7 +29,7 @@ class DailyAdapter extends Command
     public function handle()
     {
         //use GatherJob to gather new rates from adapters
-        (new GatherJob())->work("App\CurrencyModule\Adapters\\" , ".\app\CurrencyModule\Adapters\adapterConfig.json",false);
+        (new GatherJob())->work("App\CurrencyModule\Adapters\\" , ".\app\CurrencyModule\Adapters\adapterConfig.json");
         #(new GatherJob())->test("App\CurrencyModule\Adapters\\" , ".\app\CurrencyModule\Adapters\adapterConfig.json");
 
 

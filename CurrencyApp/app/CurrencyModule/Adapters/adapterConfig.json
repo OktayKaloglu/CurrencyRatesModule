@@ -1,0 +1,27 @@
+
+{
+    "0":{
+        "codeName": "ECB",
+        "className": "AdapterEcb",
+        "baseCode":"TRY",
+        "baseName":"TURKISH LIRA",
+        "adapterUrls":["https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"],
+        "announcementStyle":"daily",
+        "times":{
+            "announcementTime" : [8,0,0],
+            "lastAnnouncementTime" : [17,5,0] }
+        },
+
+    "1":{
+        "codeName": "TCMB",
+        "className": "AdapterTcmb",
+        "baseCode":"TRY",
+        "baseName":"TURKISH LIRA",
+        "adapterUrls":["https://www.tcmb.gov.tr/kurlar/"],
+        "announcementStyle":"daily",
+        "times":{
+            "announcementTime" : [15,30,0],
+            "lastAnnouncementTime" : [15,35,0] }
+        }
+}
+

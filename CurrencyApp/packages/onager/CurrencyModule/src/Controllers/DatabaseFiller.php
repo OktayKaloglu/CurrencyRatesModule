@@ -1,14 +1,12 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use DB;
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 
 
-class DatabaseFiller extends Controller {
+class DatabaseFiller {
 
 
     public function fillVendors($vendors=null)
@@ -23,8 +21,11 @@ class DatabaseFiller extends Controller {
             echo "Record inserted successfully.<br/>";
         }catch (QueryException $e){
             echo $e->getMessage(). '<br/>';
+
         }
+
     }
+
 
     public function parityfill($currencies) {
         #adding new parities to the db

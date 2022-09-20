@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AccountsController;
+use App\CurrencyModule\Adapters\GatherJob;
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Queries;
 /*
@@ -21,7 +22,7 @@ Route::get('/', function () {
 });
 
 
-Route::GET('/test',\App\CurrencyModule\Adapters\Helpers::class.'@checkConnection');
+Route::GET('/test',\App\CurrencyModule\Adapters\GatherJob::class.'@test');
 
 Route::GET('/settings/account',UserAuthController::class.'@edit')->middleware('auth')->name('settings/account');
 Route::patch('/settings/account',UserAuthController::class.'@update');
@@ -64,4 +65,3 @@ Auth::routes(
 
 );
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

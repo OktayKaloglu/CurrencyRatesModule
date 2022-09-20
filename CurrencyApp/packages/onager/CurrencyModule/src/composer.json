@@ -1,0 +1,23 @@
+{
+    "name": "t-okt/currency-module",
+    "description": "Its a laravel package that gathers data from various vendors and service them to the clients. The app displays the rates based on the client's preferences.",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "TOkt\\CurrencyModule\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Oktay Kaloglu"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.0.2",
+        "laravel/framework": "^9.19",
+        "laravel/passport": "^11.1",
+        "laravel/ui": "^4.0"
+    }
+}
