@@ -64,6 +64,7 @@ class AdapterEcb  extends AdapterAbstract
                     ]);
                 }
 
+
                 return $parities;
 
             }

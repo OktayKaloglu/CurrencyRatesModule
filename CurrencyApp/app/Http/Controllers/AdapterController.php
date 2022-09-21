@@ -25,19 +25,16 @@ class AdapterController extends Controller {
     ]
 
      */
-    const baseURLs = [
-        'TCMB'=>"https://www.tcmb.gov.tr/kurlar/",
-        'ECB'=>"https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
-    ];
+
 
     #run adapters for the first time
     public function ParitySeeder()
     {
-
         $DBFiller=new DatabaseFiller();
         $adapters=(new GatherJob())->getAdapters("App\CurrencyModule\Adapters\\" , ".\app\CurrencyModule\Adapters\adapterConfig.json");
         foreach ($adapters as $adapter){
             $DBFiller-> parityfill(($adapter)->gather(true));
+            //print_r($adapter->gather(true));
         }
 
 

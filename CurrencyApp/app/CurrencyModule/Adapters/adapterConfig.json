@@ -3,12 +3,12 @@
     "0":{
         "codeName": "ECB",
         "className": "AdapterEcb",
-        "baseCode":"TRY",
-        "baseName":"TURKISH LIRA",
+        "baseCode":"EUR",
+        "baseName":"EURO",
         "adapterUrls":["https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"],
         "announcementStyle":"daily",
         "times":{
-            "announcementTime" : [8,0,0],
+            "announcementTime" : [17,0,0],
             "lastAnnouncementTime" : [17,5,0] }
         },
 

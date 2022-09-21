@@ -26,7 +26,7 @@ class AdapterTcmb extends AdapterAbstract
     public function gather( $testStatus=false)
     {
         $urls=$this->generateTcmbUrl($this->adapterUrls);
-        array_push($urls,"https://www.tcmb.gov.tr/kurlar/202209/05092022.xml");//test purposes and for db seeding
+        array_push($urls,"https://www.tcmb.gov.tr/kurlar/202209/20092022.xml");//test purposes and for db seeding
         $url=Helpers::checkConnection($urls);//it will get the first working url so the test url that has been added will be used until the adapters announcement time met.
                                     //once AnnouncementTime has been meet the firs url generated will be the working one.
 
@@ -43,7 +43,18 @@ class AdapterTcmb extends AdapterAbstract
                 foreach ($xml->Currency as $curr){
                     $code=$curr->attributes()["CurrencyCode"].'/'.$this->baseCode;
                     $parity_id=((new Queries())->searchq($code,"parities"))->id;
+
+                    array_push($parities, [
+                        "time"=>$time,
+                        "vendor_id"=>$vendor_id,
+                        "parity_id"=>$parity_id,
+                        "code"=>$code,
+                        "name"=>$curr->CurrencyName.' '.$this->baseName,
+                        "buy_rate"=>(float)$curr->ForexBuying,
+                        "sell_rate"=>(float)$curr->ForexSelling,
+                    ]);
                 }
+
                 $this->insertStatus=true;//we added today's information
                 return $parities;
 
